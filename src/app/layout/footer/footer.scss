@@ -1,0 +1,61 @@
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  background: var(--light-gray);
+  margin-top: 3rem;
+}
+
+/* 頁尾樣式 */
+.main-footer {
+  background: rgba(20, 20, 20, 0.95);
+  border-top: 2px solid var(--goban-gold);
+  padding: 3rem 5% 1rem;
+  margin-top: 5rem;
+  color: #ccc;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h4 {
+  color: var(--goban-gold);
+  margin-bottom: 1.2rem;
+  font-size: 1.2rem;
+}
+
+.footer-section p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.social-links a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.social-links a:hover {
+  color: var(--goban-gold);
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    text-align: center;
+  }
+}

@@ -1,0 +1,27 @@
+<div class="post-list">
+  @for (post of posts; track post.id) {
+    <article class="post-card">
+      <header class="post-header">
+        <span class="category-badge">{{ post.category }}</span>
+        <h2 class="post-title">
+          <a [routerLink]="['/post', post.id]">{{ post.title }}</a>
+        </h2>
+        <div class="post-meta">
+          <i class="fa-regular fa-calendar-days"></i> {{ post.date | date:'yyyy-MM-dd HH:mm' }}
+        </div>
+      </header>
+      
+      <div class="post-summary">
+        <p>{{ post.summary }}</p>
+      </div>
+      
+      <footer class="post-footer">
+        <a [routerLink]="['/post', post.id]" class="read-more">繼續閱讀 <i class="fa-solid fa-angle-right"></i></a>
+      </footer>
+    </article>
+  } @empty {
+    <div class="empty-state">
+      <p>目前還沒有任何文章喔！</p>
+    </div>
+  }
+</div>

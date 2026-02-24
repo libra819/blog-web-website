@@ -1,0 +1,37 @@
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.widget {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+  .widget-title {
+    font-size: 1.1rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    i { color: #0056b3; margin-right: 5px; }
+  }
+
+  p { font-size: 0.95rem; color: #555; }
+
+  &.category-widget ul li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    &:last-child { border-bottom: none; }
+    
+    a {
+      display: flex;
+      justify-content: space-between;
+      color: #444;
+      &:hover { color: #0056b3; }
+      span { color: #999; font-size: 0.85rem; }
+    }
+  }
+}

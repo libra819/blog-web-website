@@ -1,0 +1,49 @@
+/* 讓 AppComponent 本身成為 Flex 容器，確保頁面內容不足時 Footer 依然在最底下 */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  flex-grow: 1; /* 讓 main 區塊撐開剩餘空間，把 footer 推到底部 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+  align-items: flex-start; /* 讓側邊欄不會因為主內容太長而跟著被拉長變形 */
+
+  /* 主內容區塊佔據大部分空間 */
+  .main-content {
+    flex: 3;
+    min-width: 0; /* 重要：防止內部出現大圖片或長文字時撐破 Flex 容器 */
+  }
+
+  /* 側邊欄佔據較小空間 */
+  .sidebar {
+    flex: 1;
+    min-width: 300px;
+    position: sticky; /* 讓側邊欄在網頁往下滾動時可以固定在畫面上 */
+    top: 20px;
+  }
+}
+
+/* 響應式設計：在平板與手機螢幕上（寬度小於 850px），改為上下排列 */
+@media (max-width: 850px) {
+  .content-wrapper {
+    flex-direction: column;
+
+    .sidebar {
+      width: 100%;
+      min-width: auto;
+      position: static; /* 手機版取消 fixed 效果，跟著頁面自然滾動 */
+    }
+  }
+}
