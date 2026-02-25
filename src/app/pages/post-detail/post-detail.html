@@ -21,9 +21,9 @@
     <footer class="post-footer">
       <div class="tags">
         <i class="fa-solid fa-tags"></i>
-        <span class="tag">Angular</span>
-        <span class="tag">Express</span>
-        <span class="tag">JWT</span>
+        @for (item of post.tags; track $index) {
+          <span class="tag">{{ item }}</span>
+        }
       </div>
     </footer>
   </article>

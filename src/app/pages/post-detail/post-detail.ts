@@ -47,7 +47,8 @@ export class PostDetail implements OnInit {
         </blockquote>
         
         <p>接下來我們還會討論如何實作路由守衛 (Route Guard) 來保護特定的頁面...</p>
-      `
+      `,
+      tags: 'Angular,Express,JWT'.split(',') // 將字串轉成陣列
     };
   }
 }

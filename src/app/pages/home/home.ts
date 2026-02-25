@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-
+import { Post, PostService } from '../../services/post';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -9,9 +9,29 @@ import { DatePipe } from '@angular/common';
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
+export class Home implements OnInit {
+  private postService = inject(PostService);
+  private cdr = inject(ChangeDetectorRef);
+
+  posts: Post[] = [];
+  isLoading = true;
+
+  ngOnInit(): void {
+    console.error('取得文章列表');
+    this.postService.getPosts().subscribe({
+      next: (data) => {
+        this.posts = data;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('取得文章列表失敗', err);
+        this.isLoading = false;
+      }
+    });
+  }
 // 準備用來渲染的假資料
-  posts = [
+  /*posts = [
     { 
       id: 1, 
       title: 'Angular 20 與 Express 整合 JWT 登入實戰與 Token 攔截器', 
@@ -33,5 +53,5 @@ export class Home {
       date: new Date('2025-10-05 15:45:00'), 
       category: 'C#' 
     }
-  ];
+  ];*/
 }
