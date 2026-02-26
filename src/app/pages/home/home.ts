@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Post, PostService } from '../../services/post';
@@ -11,22 +11,21 @@ import { Post, PostService } from '../../services/post';
 })
 export class Home implements OnInit {
   private postService = inject(PostService);
-  private cdr = inject(ChangeDetectorRef);
 
-  posts: Post[] = [];
-  isLoading = true;
+  // 將原本的變數改為 Signal
+  posts = signal<Post[]>([]);
+  isLoading = signal<boolean>(true);
 
   ngOnInit(): void {
     console.error('取得文章列表');
     this.postService.getPosts().subscribe({
       next: (data) => {
-        this.posts = data;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this.posts.set(data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('取得文章列表失敗', err);
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     });
   }

@@ -1,5 +1,5 @@
 <div class="post-list">
-  @for (post of posts; track post.id) {
+  @for (post of posts(); track post.id) {
     <article class="post-card">
       <header class="post-header">
         <span class="category-badge">{{ post.category }}</span>
