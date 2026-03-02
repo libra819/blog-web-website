@@ -17,16 +17,23 @@ export class Home implements OnInit {
   isLoading = signal<boolean>(true);
 
   ngOnInit(): void {
-    const queryParams = new URLSearchParams(window.location.search);
-    const tag = queryParams.get('tags') || '';
-    const category = queryParams.get('category') || '';
-    const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
-    console.error('取得文章列表', query);
-    this.searchTag(query);
+    // const queryParams = new URLSearchParams(window.location.search);
+    // const tag = queryParams.get('tags') || '';
+    // const category = queryParams.get('category') || '';
+    // const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
+    // console.error('取得文章列表', query);
+    // this.searchTag(query);
 
-    this.route.queryParams.subscribe(params => {
-      const category = params['category'];
-      this.searchTag(category ? `category=${category}` : ''); 
+    this.route.queryParams.subscribe((params) => {
+      const tag = params["tags"] || '';
+      const category = params["category"] || '';
+      const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
+      console.error('取得文章列表', query);
+      this.searchTag(query);
+      // const category = params['category'];
+      // // if (category) {
+      // //   this.searchTag(category ? `category=${category}` : '');
+      // // }
     });
   }
 
