@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 })
 export class PostDetail implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   
   // 存放文章資料的變數
   post: any = null;
@@ -50,5 +51,13 @@ export class PostDetail implements OnInit {
       `,
       tags: 'Angular,Express,JWT'.split(',') // 將字串轉成陣列
     };
+  }
+
+  searchByTag(tag: string) {
+    // 搜尋tag，回到首頁並顯示搜尋tag的結果
+    console.log('搜尋 tag:', tag);
+      // 這裡可以使用 Angular 的 Router 來導航回首頁，並帶上搜尋參數
+    // 例如：this.router.navigate(['/'], { queryParams: { q: tag } });
+    this.router.navigate(['/'], { queryParams: { tags: tag } });
   }
 }

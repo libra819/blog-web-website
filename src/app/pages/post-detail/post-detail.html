@@ -22,7 +22,7 @@
       <div class="tags">
         <i class="fa-solid fa-tags"></i>
         @for (item of post.tags; track $index) {
-          <span class="tag">{{ item }}</span>
+          <span class="tag" (click)="searchByTag(item)">{{ item }}</span>
         }
       </div>
     </footer>

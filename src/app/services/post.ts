@@ -13,8 +13,8 @@ export interface Post {
   title: string;
   summary: string;
   content: string;
-  tags: string;         // 資料庫的 varchar，例如 "Angular,Express,JWT"
-  created_at: string;   // 後端回傳的 ISO 8601 時間字串
+  tags: string; // 資料庫的 varchar，例如 "Angular,Express,JWT"
+  created_at: string; // 後端回傳的 ISO 8601 時間字串
   updated_at: string;
 }
 
@@ -30,9 +30,21 @@ export class PostService {
   private apiUrl = `${environment.apiUrl}post`;
 
   // 取得所有文章列表
-  getPosts(): Observable<Post[]> {
+  getPosts(query: string): Observable<Post[]> {
     console.log('呼叫 PostService.getPosts()，API URL:', this.apiUrl);
-    return this.http.get<Post[]>(this.apiUrl);
+    if (query && query.trim() !== '') {
+      if (query.includes('category')) {
+        return this.http.get<Post[]>(
+          this.apiUrl + (query ? `?category=${encodeURIComponent(query.split('=')[1])}` : ''),
+        );
+      } else {
+        return this.http.get<Post[]>(
+          this.apiUrl + (query ? `?tags=${encodeURIComponent(query.split('=')[1])}` : ''),
+        );
+      }
+    } else {
+      return this.http.get<Post[]>(this.apiUrl);
+    }
   }
 
   // 取得單篇文章 (支援傳入 id 或 uuid)
@@ -42,7 +54,7 @@ export class PostService {
 
   // 新增文章 (發送 POST 請求，JWT Interceptor 會自動帶 Token)
   createPost(post: CreatePostDTO): Observable<Post> {
-    return this.http.post<Post>(this.apiUrl+"/addpost", post);
+    return this.http.post<Post>(this.apiUrl + '/addpost', post);
   }
 
   // 更新文章

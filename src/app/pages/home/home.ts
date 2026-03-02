@@ -17,8 +17,12 @@ export class Home implements OnInit {
   isLoading = signal<boolean>(true);
 
   ngOnInit(): void {
-    console.error('取得文章列表');
-    this.postService.getPosts().subscribe({
+    const queryParams = new URLSearchParams(window.location.search);
+    const tag = queryParams.get('tags') || '';
+    const category = queryParams.get('category') || '';
+    const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
+    console.error('取得文章列表', query);
+    this.postService.getPosts(query).subscribe({
       next: (data) => {
         this.posts.set(data);
         this.isLoading.set(false);
