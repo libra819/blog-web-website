@@ -7,10 +7,17 @@
   <div class="widget category-widget">
     <h3 class="widget-title"><i class="fa-solid fa-folder-open"></i> 文章分類</h3>
     <ul>
-      <li><a href="#">Web Development <span>(13)</span></a></li>
+      @for (item of categories(); track item.category) {
+        <li>
+          <a class="tag" (click)="searchByCategory(item.category)">
+            {{ item.category }} <span>({{ item.count }})</span>
+          </a>
+        </li>
+      }
+      <!-- <li><a href="#">Web Development <span>(13)</span></a></li>
       <li><a href="#">Linux & Server <span>(25)</span></a></li>
       <li><a href="#">Python <span>(12)</span></a></li>
-      <li><a href="#">C# & .NET <span>(6)</span></a></li>
+      <li><a href="#">C# & .NET <span>(6)</span></a></li> -->
     </ul>
   </div>
 </aside>

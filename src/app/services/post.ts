@@ -66,4 +66,8 @@ export class PostService {
   deletePost(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  // 依照文章的標籤category來看所有類別的文章數量
+  getCategoryCounts(): Observable<{ category: string; count: number }[]> {
+    return this.http.get<{ category: string; count: number }[]>(`${this.apiUrl}/getCategory`);
+  }
 }

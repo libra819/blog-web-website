@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Post, PostService } from '../../services/post';
 @Component({
@@ -11,7 +11,7 @@ import { Post, PostService } from '../../services/post';
 })
 export class Home implements OnInit {
   private postService = inject(PostService);
-
+  constructor(private route: ActivatedRoute) {}
   // 將原本的變數改為 Signal
   posts = signal<Post[]>([]);
   isLoading = signal<boolean>(true);
@@ -22,6 +22,15 @@ export class Home implements OnInit {
     const category = queryParams.get('category') || '';
     const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
     console.error('取得文章列表', query);
+    this.searchTag(query);
+
+    this.route.queryParams.subscribe(params => {
+      const category = params['category'];
+      this.searchTag(category ? `category=${category}` : ''); 
+    });
+  }
+
+  searchTag(query: string) {
     this.postService.getPosts(query).subscribe({
       next: (data) => {
         this.posts.set(data);
@@ -30,10 +39,11 @@ export class Home implements OnInit {
       error: (err) => {
         console.error('取得文章列表失敗', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
-// 準備用來渲染的假資料
+
+  // 準備用來渲染的假資料
   /*posts = [
     { 
       id: 1, 
