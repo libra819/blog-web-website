@@ -1,27 +1,30 @@
-@if (post) {
+@if (post()) {
+  <!-- 
+    將 post() 重新用成Json來輸出
+  -->
   <article class="post-detail-card">
     <nav class="post-nav">
       <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> 返回首頁</a>
     </nav>
 
     <header class="post-header">
-      <span class="category-badge">{{ post.category }}</span>
-      <h1 class="post-title">{{ post.title }}</h1>
+      <span class="category-badge">{{ post().category }}</span>
+      <h1 class="post-title">{{ post().title }}</h1>
       
       <div class="post-meta">
-        <span class="meta-item"><i class="fa-solid fa-user-astronaut"></i> {{ post.author }}</span>
-        <span class="meta-item"><i class="fa-regular fa-calendar-days"></i> {{ post.date | date:'yyyy-MM-dd' }}</span>
+        <span class="meta-item"><i class="fa-solid fa-user-astronaut"></i> {{ post().author_name }}</span>
+        <span class="meta-item"><i class="fa-regular fa-calendar-days"></i> {{ post().created_at | date:'yyyy-MM-dd' }}</span>
       </div>
     </header>
 
     <hr class="divider">
 
-    <div class="post-content" [innerHTML]="post.content"></div>
+    <div class="post-content" [innerHTML]="post().content"></div>
     
     <footer class="post-footer">
       <div class="tags">
         <i class="fa-solid fa-tags"></i>
-        @for (item of post.tags; track $index) {
+        @for (item of post().tags.split(','); track $index) {
           <span class="tag" (click)="searchByTag(item)">{{ item }}</span>
         }
       </div>
