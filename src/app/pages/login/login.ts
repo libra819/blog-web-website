@@ -39,7 +39,8 @@ export class Login {
       next: () => {
         this.isLoading.set(false);
         // 登入成功，導向首頁
-        this.router.navigate(['/']);
+        this.snackBar.open('登入成功！', '關閉', { duration: 3000 });
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading.set(false);

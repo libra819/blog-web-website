@@ -1,0 +1,108 @@
+.editor-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 0 50px 0;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 15px;
+
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .btn-back {
+      color: #666;
+      font-size: 1.2rem;
+      &:hover { color: #0056b3; }
+    }
+
+    h2 { margin: 0; color: #2c3e50; font-size: 1.6rem; }
+  }
+}
+
+/* 主按鈕 */
+.btn-primary {
+  background-color: #198754;
+  color: #fff;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) { background-color: #157347; }
+  &:disabled { background-color: #8ccba8; cursor: not-allowed; }
+  i { margin-right: 5px; }
+}
+
+/* 表單排版 */
+.editor-form {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+    @media (max-width: 768px) { flex-direction: column; gap: 0; }
+  }
+
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #0056b3;
+      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+    }
+
+    &.is-invalid { border-color: #dc3545; }
+  }
+
+  .hint { color: #888; font-size: 0.85rem; margin-top: 5px; display: block; }
+}
+
+/* 內容編輯器區塊加大 */
+.content-group {
+  margin-top: 30px;
+  
+  .content-editor {
+    min-height: 500px;
+    resize: vertical;
+    font-family: 'Courier New', Courier, monospace; /* 讓輸入原始碼時有等寬字體的感覺 */
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: #fafafa;
+  }
+}
