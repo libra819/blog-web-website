@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Post, PostService } from '../../services/post';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -11,6 +12,7 @@ import { Post, PostService } from '../../services/post';
 })
 export class Home implements OnInit {
   private postService = inject(PostService);
+  private snackBar = inject(MatSnackBar);
   constructor(private route: ActivatedRoute) {}
   // 將原本的變數改為 Signal
   posts = signal<Post[]>([]);
@@ -40,10 +42,14 @@ export class Home implements OnInit {
   searchTag(query: string) {
     this.postService.getPosts(query).subscribe({
       next: (data) => {
+        if (data.length === 0) {
+          this.snackBar.open('沒有找到相關文章', '關閉', { duration: 3000 });
+        }
         this.posts.set(data);
         this.isLoading.set(false);
       },
       error: (err) => {
+        this.snackBar.open('無法取得文章列表，請稍後再試', '關閉', { duration: 3000 });
         console.error('取得文章列表失敗', err);
         this.isLoading.set(false);
       },

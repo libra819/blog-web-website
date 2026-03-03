@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Post, PostService } from '../../services/post';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-post-detail',
   standalone: true,
@@ -14,7 +14,7 @@ export class PostDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private postService = inject(PostService);
-
+  private snackBar = inject(MatSnackBar);
   // 存放文章資料的變數
   post = signal<Post>({
     id: 0,
@@ -74,6 +74,7 @@ export class PostDetail implements OnInit {
       },
       error: (err) => {
         console.error('取得文章失敗', err);
+        this.snackBar.open('無法取得文章內容，請稍後再試', '關閉', { duration: 3000 });
         // 如果文章不存在或發生錯誤，可以導回首頁或顯示錯誤訊息
         this.router.navigate(['/']);
       },
