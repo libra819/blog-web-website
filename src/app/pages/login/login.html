@@ -1,1 +1,71 @@
-<p>login works!</p>
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">登入帳號</h2>
+    <p class="auth-subtitle">歡迎回來 My Tech Notes</p>
+
+    @if (errorMessage()) {
+      <div class="alert alert-danger">{{ errorMessage() }}</div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">使用者名稱</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="請輸入使用者名稱"
+          [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+        />
+        @if (loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched) {
+          <small class="error-text">使用者名稱為必填</small>
+        }
+        @if (loginForm.get('username')?.hasError('minlength') && loginForm.get('username')?.touched) {
+          <small class="error-text">使用者名稱至少需要 3 個字</small>
+        }
+      </div>
+      <div class="form-group">
+        <label for="email">電子信箱</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="name@example.com"
+          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
+          <small class="error-text">信箱為必填</small>
+        }
+        @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
+          <small class="error-text">請輸入有效的信箱格式</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="請輸入密碼"
+          [class.is-invalid]="
+            loginForm.get('password')?.invalid && loginForm.get('password')?.touched
+          "
+        />
+        @if (
+          loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched
+        ) {
+          <small class="error-text">密碼為必填</small>
+        }
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <i class="fa-solid fa-spinner fa-spin"></i> 登入中...
+        } @else {
+          登入
+        }
+      </button>
+    </form>
+  </div>
+</div>

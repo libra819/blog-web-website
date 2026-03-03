@@ -8,9 +8,17 @@
     </div>
     <nav class="main-nav">
       <ul>
-        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">首頁</a></li>
+        <li>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            >首頁</a
+          >
+        </li>
         <li><a routerLink="/archives">歸檔</a></li>
         <li><a routerLink="/about">關於我</a></li>
+        @if (authService.isLoggedIn()) {
+          <li><a routerLink="/dashboard">後台管理</a></li>
+          <li><a href="javascript:void(0)" (click)="logout()">登出</a></li>
+        }
       </ul>
     </nav>
   </div>
