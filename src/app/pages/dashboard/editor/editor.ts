@@ -52,7 +52,12 @@ export class Editor implements OnInit {
     summary: ['', [Validators.required, Validators.maxLength(500)]],
   });
 
+  // 新增一個 Signal 用來存放分類列表
+  categoryList = signal<string[]>([]);
+
   ngOnInit(): void {
+    // 載入分類列表
+    this.loadCategories();
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
@@ -67,11 +72,16 @@ export class Editor implements OnInit {
     });
   }
 
+  // 取得資料庫中的分類
+  loadCategories() {
+    this.postService.getCategories().subscribe({
+      next: (categories) => this.categoryList.set(categories),
+      error: (err) => console.error('無法載入分類清單', err)
+    });
+  }
+
   // 初始化 Editor.js
   initEditor(existingData?: any) {
-    // 取得存在 localStorage 中的 Token
-    const token = this.authService.getToken();
-
     const uploadEndpoint = `${environment.apiUrl}upload/image`;
     this.editor = new EditorJS({
       holder: 'editorjs', // 對應 HTML 中的 id
@@ -170,6 +180,20 @@ export class Editor implements OnInit {
         summary: formValue.summary ?? '',
         content: JSON.stringify(editorData), // 將 Editor JSON 轉為字串
       };
+
+      // 【核心邏輯】檢查並新增未知的分類
+      const inputCategory = formValue.category?.trim();
+      if (inputCategory && !this.categoryList().includes(inputCategory)) {
+        try {
+          // 如果分類不在清單內，先呼叫 API 將其寫入 postsettings
+          await firstValueFrom(this.postService.addCategory(inputCategory));
+          // 更新本地 Signal，避免重複發送
+          this.categoryList.update(list => [...list, inputCategory]); 
+        } catch (catErr) {
+          console.error('新增分類至資料庫失敗', catErr);
+          // 這裡可以選擇不中斷流程，繼續儲存文章
+        }
+      }
 
       const currentId = this.postId();
 

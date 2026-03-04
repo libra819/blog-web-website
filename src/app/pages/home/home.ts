@@ -30,7 +30,6 @@ export class Home implements OnInit {
       const tag = params["tags"] || '';
       const category = params["category"] || '';
       const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
-      console.error('取得文章列表', query);
       this.searchTag(query);
       // const category = params['category'];
       // // if (category) {

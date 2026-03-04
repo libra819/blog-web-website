@@ -39,20 +39,24 @@
 
         <div class="form-group flex-1">
           <label>分類</label>
-          <select
+
+          <input
+            type="text"
             formControlName="category"
+            list="category-datalist"
+            placeholder="請選擇或輸入新分類"
             [class.is-invalid]="
               editorForm.get('category')?.invalid && editorForm.get('category')?.touched
             "
-          >
-            <option value="">請選擇分類</option>
-            <option value="Web Development">Web Development</option>
-            <option value="Linux & Server">Linux & Server</option>
-            <option value="Python">Python</option>
-            <option value="C# & .NET">C# & .NET</option>
-            <option value="C#">C#</option>
-            <option value="Life & Others">Life & Others</option>
-          </select>
+          />
+
+          <datalist id="category-datalist">
+            @for (cat of categoryList(); track cat) {
+              <option [value]="cat"></option>
+            }
+          </datalist>
+
+          <small class="hint">可從選單點擊挑選，或直接輸入建立全新分類</small>
         </div>
       </div>
 

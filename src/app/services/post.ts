@@ -70,4 +70,15 @@ export class PostService {
   getCategoryCounts(): Observable<{ category: string; count: number }[]> {
     return this.http.get<{ category: string; count: number }[]>(`${this.apiUrl}/getCategory`);
   }
+
+  // 取得所有分類
+  getCategories(): Observable<string[]> {
+    console.log('呼叫 PostService.getCategories()，API URL:', `${this.apiUrl}/categories`);
+    return this.http.get<string[]>(`${this.apiUrl}/categories`);
+  }
+
+  // 新增分類
+  addCategory(categoryName: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/categories`, { category: categoryName });
+  }
 }
