@@ -17,7 +17,7 @@ export class Dashboard implements OnInit {
   isLoading = signal<boolean>(true);
 
   ngOnInit(): void {
-    this.snackBar.open('歡迎來到後台管理頁面！', '關閉', { duration: 3000 });
+    this.snackBar.open('歡迎來到後台管理頁面！', "", { duration: 1000 });
     this.loadPosts();
   }
 

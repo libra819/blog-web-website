@@ -18,6 +18,9 @@ import CodeTool from '@editorjs/code';
 // @ts-ignore
 import ImageTool from '@editorjs/image';
 
+import { HttpClient } from '@angular/common/http'; // 1. 引入 HttpClient
+import { firstValueFrom } from 'rxjs'; // 2. 引入 firstValueFrom
+
 @Component({
   selector: 'app-editor',
   standalone: true,
@@ -32,7 +35,7 @@ export class Editor implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private authService = inject(Authservice);
-
+  private http = inject(HttpClient);
   editor!: EditorJS; // 宣告 Editor.js 實體
 
   // 狀態管理
@@ -46,11 +49,11 @@ export class Editor implements OnInit {
     title: ['', [Validators.required]],
     category: ['', [Validators.required]],
     tags: [''],
-    summary: ['', [Validators.required, Validators.maxLength(500)]]
+    summary: ['', [Validators.required, Validators.maxLength(500)]],
   });
 
- ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.postId.set(Number(id));
@@ -81,21 +84,37 @@ export class Editor implements OnInit {
         image: {
           class: ImageTool,
           config: {
-            endpoints: {
-              // 告訴 Editor.js 要把圖片 POST 到哪裡
-              byFile: uploadEndpoint, 
+            // 移除原本的 endpoints 和 additionalRequestHeaders
+            // 改用自訂的 uploader
+            uploader: {
+              uploadByFile: async (file: File) => {
+                // 1. 將圖片包裝成 FormData，欄位名稱必須與後端 multer.single('image') 一致
+                const formData = new FormData();
+                formData.append('image', file);
+
+                try {
+                  // 2. 使用 Angular 的 HttpClient 發送請求！
+                  // 這樣請求就會「乖乖排隊」經過我們的 authInterceptor，
+                  // 沒 Token 會自動加，過期了也會自動換發後重送！
+                  const response = await firstValueFrom(
+                    this.http.post<any>(uploadEndpoint, formData),
+                  );
+
+                  // 3. 回傳 Editor.js 規定的 JSON 格式
+                  return response;
+                } catch (error) {
+                  console.error('圖片上傳失敗', error);
+                  return { success: 0, message: '上傳失敗，請檢查權限或網路狀態' };
+                }
+              },
             },
-            additionalRequestHeaders: {
-              // 手動帶上 Token，讓 Express 的 authMiddleware 可以驗證過關
-              'Authorization': `Bearer ${token}` 
-            }
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 
-loadPostData(id: number) {
+  loadPostData(id: number) {
     this.isLoadingData.set(true);
     this.postService.getPostById(id).subscribe({
       next: (post) => {
@@ -103,9 +122,9 @@ loadPostData(id: number) {
           title: post.title,
           category: post.category,
           tags: post.tags,
-          summary: post.summary
+          summary: post.summary,
         });
-        
+
         let parsedContent = {};
         try {
           parsedContent = post.content ? JSON.parse(post.content) : {};
@@ -124,7 +143,7 @@ loadPostData(id: number) {
       error: (err) => {
         console.error('載入文章失敗', err);
         this.router.navigate(['/dashboard']);
-      }
+      },
     });
   }
 
@@ -139,7 +158,7 @@ loadPostData(id: number) {
     try {
       // 1. 從 Editor.js 取得最新的 JSON 內容
       const editorData = await this.editor.save();
-      
+
       // 取得表單目前的值
       const formValue = this.editorForm.value;
 
@@ -149,7 +168,7 @@ loadPostData(id: number) {
         category: formValue.category ?? '',
         tags: formValue.tags ?? '',
         summary: formValue.summary ?? '',
-        content: JSON.stringify(editorData) // 將 Editor JSON 轉為字串
+        content: JSON.stringify(editorData), // 將 Editor JSON 轉為字串
       };
 
       const currentId = this.postId();
@@ -158,12 +177,12 @@ loadPostData(id: number) {
       if (currentId) {
         this.postService.updatePost(currentId, postData).subscribe({
           next: () => this.handleSuccess('更新成功'),
-          error: (err) => this.handleError(err)
+          error: (err) => this.handleError(err),
         });
       } else {
         this.postService.createPost(postData as CreatePostDTO).subscribe({
           next: () => this.handleSuccess('發布成功'),
-          error: (err) => this.handleError(err)
+          error: (err) => this.handleError(err),
         });
       }
     } catch (error) {

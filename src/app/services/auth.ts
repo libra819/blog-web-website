@@ -17,6 +17,7 @@ export class Authservice {
   // 組合出文章的 API 基礎路徑，例如：http://localhost:3000/api/posts
   private apiUrl = `${environment.apiUrl}auth`;
   private tokenKey = 'blog_jwt_token';
+  private refreshTokenKey = 'blog_refresh_token';
 
   // 利用 Signal 管理全域登入狀態，初始值由 localStorage 決定
   isLoggedIn = signal<boolean>(this.hasToken());
@@ -46,14 +47,30 @@ export class Authservice {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       // tap 可以在不改變 Observable 回傳值的情況下，執行一些副作用 (Side Effect)
       tap((res) => {
-        // 假設你的 Express 後端回傳格式為 { token: 'ey...' }
-        if (res.token) {
-          this.setToken(res.token);
-          this.isLoggedIn.set(true); // 更新登入狀態
+        // 假設登入成功後，Express 會同時回傳 accessToken 與 refreshToken
+        if (res.accessToken && res.refreshToken) {
+          this.setToken(res.accessToken);
+          this.setRefreshToken(res.refreshToken);
+          this.isLoggedIn.set(true);
         }
       }),
     );
   }
+// 👇 新增：使用 Refresh Token 換取新 Access Token 的 API
+  refreshTokenAPI(): Observable<any> {
+    const refreshToken = this.getRefreshToken();
+    return this.http.post<any>(`${this.apiUrl}/refresh`, { token: refreshToken }).pipe(
+      tap((res) => {
+        if (res.accessToken) {
+          this.setToken(res.accessToken); // 更新 Access Token
+        }
+      })
+    );
+  }
+
+  setRefreshToken(token: string): void { localStorage.setItem(this.refreshTokenKey, token); }
+  getRefreshToken(): string | null { return localStorage.getItem(this.refreshTokenKey); }
+
   // 登出邏輯
   logout(): void {
     localStorage.removeItem(this.tokenKey);
