@@ -139,3 +139,51 @@
     }
   }
 }
+
+/* 針對 [innerHTML] 產生的 DOM 進行樣式覆寫 */
+::ng-deep .post-content {
+  
+  /* 確保 pre 區塊有合適的圓角和字體大小 */
+  pre {
+    border-radius: 8px;
+    margin: 1.5em 0;
+    overflow-x: auto; /* 程式碼太長時允許水平捲動 */
+    
+    /* 讓裡面的 code 區塊吃滿寬度並設定字型 */
+    code {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      padding: 15px 20px;
+    }
+  }
+  /* 針對 Editor.js 產生的 figure 與 img 標籤設定 */
+  figure {
+    margin: 2em 0;
+    max-width: 100%; /* 確保外層框架不超過容器 */
+    text-align: center;
+    overflow: hidden; /* 防止內容意外溢出 */
+
+    img {
+      max-width: 100%; /* 這是關鍵：圖片最寬只能跟父元素一樣寬 */
+      height: auto;    /* 讓圖片依照比例縮放，不會變形 */
+      display: block;  /* 移除圖片下方的預設空白間隙 */
+      margin: 0 auto;  /* 讓圖片置中 */
+      border-radius: 8px; /* 加上圓角比較好看 */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    figcaption {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  }
+
+  /* 如果圖片沒有被包在 figure 裡 (防呆機制) */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+}

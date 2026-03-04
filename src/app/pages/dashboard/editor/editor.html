@@ -4,7 +4,12 @@
       <a routerLink="/dashboard" class="btn-back"><i class="fa-solid fa-arrow-left"></i></a>
       <h2>{{ postId() ? '編輯文章' : '新增文章' }}</h2>
     </div>
-    <button type="button" class="btn-primary" (click)="onSave()" [disabled]="isSaving() || isLoadingData()">
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="onSave()"
+      [disabled]="isSaving() || isLoadingData()"
+    >
       @if (isSaving()) {
         <i class="fa-solid fa-spinner fa-spin"></i> 儲存中...
       } @else {
@@ -22,13 +27,24 @@
       <div class="form-row">
         <div class="form-group flex-2">
           <label>文章標題</label>
-          <input type="text" formControlName="title" placeholder="請輸入標題"
-                 [class.is-invalid]="editorForm.get('title')?.invalid && editorForm.get('title')?.touched">
+          <input
+            type="text"
+            formControlName="title"
+            placeholder="請輸入標題"
+            [class.is-invalid]="
+              editorForm.get('title')?.invalid && editorForm.get('title')?.touched
+            "
+          />
         </div>
-        
+
         <div class="form-group flex-1">
           <label>分類</label>
-          <select formControlName="category" [class.is-invalid]="editorForm.get('category')?.invalid && editorForm.get('category')?.touched">
+          <select
+            formControlName="category"
+            [class.is-invalid]="
+              editorForm.get('category')?.invalid && editorForm.get('category')?.touched
+            "
+          >
             <option value="">請選擇分類</option>
             <option value="Web Development">Web Development</option>
             <option value="Linux & Server">Linux & Server</option>
@@ -42,20 +58,32 @@
 
       <div class="form-group">
         <label>標籤 (Tags)</label>
-        <input type="text" formControlName="tags" placeholder="例如：Angular, Express, JWT (以半形逗號分隔)">
+        <input
+          type="text"
+          formControlName="tags"
+          placeholder="例如：Angular, Express, JWT (以半形逗號分隔)"
+        />
         <small class="hint">請使用半形逗號區隔多個標籤</small>
       </div>
 
       <div class="form-group">
         <label>文章摘要 (Summary)</label>
-        <textarea formControlName="summary" rows="2" placeholder="簡短描述這篇文章的內容，將顯示在首頁列表中"
-                  [class.is-invalid]="editorForm.get('summary')?.invalid && editorForm.get('summary')?.touched"></textarea>
+        <textarea
+          formControlName="summary"
+          rows="2"
+          placeholder="簡短描述這篇文章的內容，將顯示在首頁列表中"
+          [class.is-invalid]="
+            editorForm.get('summary')?.invalid && editorForm.get('summary')?.touched
+          "
+        ></textarea>
       </div>
 
       <div class="form-group content-group">
         <label>文章內容 (支援 HTML / Markdown 語法)</label>
-        <textarea formControlName="content" class="content-editor" placeholder="請在此輸入文章內容..."
-                  [class.is-invalid]="editorForm.get('content')?.invalid && editorForm.get('content')?.touched"></textarea>
+        <div class="form-group content-group">
+          <label>文章內容</label>
+          <div id="editorjs" class="editorjs-container"></div>
+        </div>
       </div>
     </form>
   }

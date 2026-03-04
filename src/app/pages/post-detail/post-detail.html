@@ -1,7 +1,4 @@
-@if (post()) {
-  <!-- 
-    將 post() 重新用成Json來輸出
-  -->
+@if (post().id !== 0) {
   <article class="post-detail-card">
     <nav class="post-nav">
       <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> 返回首頁</a>
@@ -20,13 +17,15 @@
 
     <hr class="divider">
 
-    <div class="post-content" [innerHTML]="post().content"></div>
+    <div class="post-content" [innerHTML]="parsedHtml()"></div>
     
     <footer class="post-footer">
       <div class="tags">
         <i class="fa-solid fa-tags"></i>
-        @for (item of post().tags.split(','); track $index) {
-          <span class="tag" (click)="searchByTag(item)">{{ item }}</span>
+        @if (post().tags) {
+          @for (item of post().tags.split(','); track $index) {
+            <span class="tag" (click)="searchByTag(item)">{{ item }}</span>
+          }
         }
       </div>
     </footer>

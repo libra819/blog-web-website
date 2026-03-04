@@ -106,3 +106,40 @@
     background-color: #fafafa;
   }
 }
+
+.content-group {
+  margin-top: 30px;
+  
+  .editorjs-container {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px 40px; /* 留白讓 Editor.js 的側邊加號按鈕有空間顯示 */
+    min-height: 400px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+
+    &:focus-within {
+      border-color: #0056b3;
+      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+    }
+  }
+}
+
+/* 限制 Editor.js 編輯器內部的圖片大小 */
+::ng-deep .editorjs-container {
+  
+  /* 針對圖片套件的容器 */
+  .image-tool__image {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* 針對實際顯示的圖片 */
+  .image-tool__image-picture {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto; /* 讓圖片在編輯時置中 */
+  }
+}
