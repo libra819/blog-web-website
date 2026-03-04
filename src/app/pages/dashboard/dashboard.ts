@@ -27,13 +27,14 @@ export class Dashboard implements OnInit {
     // 監聽網址列的分頁參數
     this.route.queryParams.subscribe(params => {
       const page = Number(params['page']) || 1;
+      const limit = Number(params['limit']) || 10;
       this.currentPage.set(page);
-      this.loadPosts(page);
+      this.loadPosts(page, limit);
     });
   }
 
-  loadPosts(page: number = 1) {
-    this.postService.getPosts("", page, 10).subscribe({
+  loadPosts(page: number = 1, limit: number = 10) {
+    this.postService.getPosts("", page, limit).subscribe({
       next: (posts) => {
         this.posts.set(posts.data);
         this.totalPages.set(posts.totalPages);
