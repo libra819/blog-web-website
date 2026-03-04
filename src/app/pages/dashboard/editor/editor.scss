@@ -1,5 +1,5 @@
 .editor-container {
-  max-width: 1000px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 20px 0 50px 0;
 }
@@ -93,53 +93,61 @@
   .hint { color: #888; font-size: 0.85rem; margin-top: 5px; display: block; }
 }
 
-/* 內容編輯器區塊加大 */
-.content-group {
-  margin-top: 30px;
-  
-  .content-editor {
-    min-height: 500px;
-    resize: vertical;
-    font-family: 'Courier New', Courier, monospace; /* 讓輸入原始碼時有等寬字體的感覺 */
-    font-size: 1rem;
-    line-height: 1.6;
-    background-color: #fafafa;
-  }
-}
-
+/* 內容編輯器區塊 (已合併並優化) */
 .content-group {
   margin-top: 30px;
   
   .editorjs-container {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 20px 40px; /* 留白讓 Editor.js 的側邊加號按鈕有空間顯示 */
-    min-height: 400px;
+    border-radius: 8px;
+    
+    /* 大幅增加左右的 Padding，讓外框看起來更寬敞 */
+    padding: 50px 80px; 
+    
+    min-height: 500px;
     font-size: 1.05rem;
-    line-height: 1.6;
+    line-height: 1.8; /* 加大行距提升中文閱讀體驗 */
+    transition: all 0.2s ease-in-out;
 
     &:focus-within {
       border-color: #0056b3;
-      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+      box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.05);
+    }
+
+    /* 響應式：手機版縮小 padding 避免太擠 */
+    @media (max-width: 768px) {
+      padding: 30px 20px;
     }
   }
 }
 
-/* 限制 Editor.js 編輯器內部的圖片大小 */
+/* --- Editor.js 內部樣式覆寫 --- */
+
+/* 1. 突破 Editor.js 預設的 650px 寬度限制，加寬到 900px */
+::ng-deep .ce-block__content, 
+::ng-deep .ce-toolbar__content {
+  max-width: 900px !important; /* 解除封印 */
+  margin: 0 auto; 
+}
+
+/* 2. 讓左側的 + 號選單往外退，不要擋到我們加寬的文字 */
+::ng-deep .ce-toolbar__actions {
+  right: 100%; 
+  padding-right: 10px;
+}
+
+/* 3. 限制圖片大小避免撐破畫面 */
 ::ng-deep .editorjs-container {
-  
-  /* 針對圖片套件的容器 */
   .image-tool__image {
     max-width: 100%;
     overflow: hidden;
   }
 
-  /* 針對實際顯示的圖片 */
   .image-tool__image-picture {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto; /* 讓圖片在編輯時置中 */
+    margin: 0 auto;
   }
 }

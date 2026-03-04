@@ -25,3 +25,21 @@
     </div>
   }
 </div>
+
+@if (!isLoading() && totalPages() > 1) {
+  <nav class="pagination-container">
+    <button class="btn-page" 
+            [disabled]="currentPage() === 1" 
+            (click)="changePage(currentPage() - 1)">
+      <i class="fa-solid fa-angle-left"></i> 上一頁
+    </button>
+    
+    <span class="page-info">第 {{ currentPage() }} 頁 / 共 {{ totalPages() }} 頁</span>
+    
+    <button class="btn-page" 
+            [disabled]="currentPage() === totalPages()" 
+            (click)="changePage(currentPage() + 1)">
+      下一頁 <i class="fa-solid fa-angle-right"></i>
+    </button>
+  </nav>
+}

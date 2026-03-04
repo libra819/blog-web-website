@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PostService, Post } from '../../services/post';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,19 +12,31 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class Dashboard implements OnInit {
   private postService = inject(PostService);
   private snackBar = inject(MatSnackBar);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   posts = signal<Post[]>([]);
   isLoading = signal<boolean>(true);
 
+  // 新增分頁狀態
+  currentPage = signal<number>(1);
+  totalPages = signal<number>(1);
+
   ngOnInit(): void {
     this.snackBar.open('歡迎來到後台管理頁面！', "", { duration: 1000 });
-    this.loadPosts();
+    // 監聽網址列的分頁參數
+    this.route.queryParams.subscribe(params => {
+      const page = Number(params['page']) || 1;
+      this.currentPage.set(page);
+      this.loadPosts(page);
+    });
   }
 
-  loadPosts() {
-    this.postService.getPosts("").subscribe({
+  loadPosts(page: number = 1) {
+    this.postService.getPosts("", page, 10).subscribe({
       next: (posts) => {
-        this.posts.set(posts);
+        this.posts.set(posts.data);
+        this.totalPages.set(posts.totalPages);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -33,6 +45,14 @@ export class Dashboard implements OnInit {
         console.error('載入文章失敗:', err);
       }
     });
+  }
+
+  // 切換分頁
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      // 注意：這裡的路徑要改為 /dashboard
+      this.router.navigate(['/dashboard'], { queryParams: { page: page } });
+    }
   }
 
   // 刪除文章

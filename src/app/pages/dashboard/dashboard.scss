@@ -111,3 +111,45 @@
 
   .empty-state { text-align: center; color: #888; padding: 40px; }
 }
+
+/* 分頁按鈕樣式 (後台版) */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-top: 1px solid #eee; /* 與表格的底線樣式保持一致 */
+  background: #fdfdfd;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+
+  .btn-page {
+    background-color: #fff;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+      color: #fff;
+    }
+
+    &:disabled {
+      border-color: #ddd;
+      color: #aaa;
+      cursor: not-allowed;
+      background-color: #f9f9f9;
+    }
+  }
+
+  .page-info {
+    font-size: 0.95rem;
+    color: #555;
+    font-weight: 500;
+  }
+}

@@ -18,6 +18,14 @@ export interface Post {
   updated_at: string;
 }
 
+// 定義後端回傳的分頁資料結構
+export interface PaginatedPosts {
+  data: Post[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 // 若有新增文章的需求，通常不包含 id, uuid, 時間等由資料庫產生的欄位
 export type CreatePostDTO = Omit<Post, 'id' | 'uuid' | 'created_at' | 'updated_at' | 'author_name'>;
 
@@ -30,20 +38,20 @@ export class PostService {
   private apiUrl = `${environment.apiUrl}post`;
 
   // 取得所有文章列表
-  getPosts(query: string): Observable<Post[]> {
+  getPosts(query: string, page: number = 1, limit: number = 10): Observable<PaginatedPosts> {
     console.log('呼叫 PostService.getPosts()，API URL:', this.apiUrl);
     if (query && query.trim() !== '') {
       if (query.includes('category')) {
-        return this.http.get<Post[]>(
-          this.apiUrl + (query ? `?category=${encodeURIComponent(query.split('=')[1])}` : ''),
+        return this.http.get<PaginatedPosts>(
+          this.apiUrl + (query ? `?category=${encodeURIComponent(query.split('=')[1])}&page=${page}&limit=${limit}` : ''),
         );
       } else {
-        return this.http.get<Post[]>(
-          this.apiUrl + (query ? `?tags=${encodeURIComponent(query.split('=')[1])}` : ''),
+        return this.http.get<PaginatedPosts>(
+          this.apiUrl + (query ? `?tags=${encodeURIComponent(query.split('=')[1])}&page=${page}&limit=${limit}` : ''),
         );
       }
     } else {
-      return this.http.get<Post[]>(this.apiUrl);
+      return this.http.get<PaginatedPosts>(this.apiUrl + `?page=${page}&limit=${limit}`);
     }
   }
 

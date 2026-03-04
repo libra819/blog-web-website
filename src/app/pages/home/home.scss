@@ -62,3 +62,43 @@
     }
   }
 }
+
+/* 分頁按鈕樣式 */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px dashed #ddd;
+
+  .btn-page {
+    background-color: #fff;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      background-color: #0056b3;
+      color: #fff;
+    }
+
+    &:disabled {
+      border-color: #ccc;
+      color: #aaa;
+      cursor: not-allowed;
+      background-color: #f9f9f9;
+    }
+  }
+
+  .page-info {
+    font-size: 0.95rem;
+    color: #555;
+    font-weight: 500;
+  }
+}

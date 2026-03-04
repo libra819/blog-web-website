@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Post, PostService } from '../../services/post';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,38 +13,38 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class Home implements OnInit {
   private postService = inject(PostService);
   private snackBar = inject(MatSnackBar);
-  constructor(private route: ActivatedRoute) {}
+  private route = inject(ActivatedRoute); // 用來讀取網址參數
+  private router = inject(Router);
+  // constructor(private route: ActivatedRoute) {}
   // 將原本的變數改為 Signal
   posts = signal<Post[]>([]);
   isLoading = signal<boolean>(true);
 
-  ngOnInit(): void {
-    // const queryParams = new URLSearchParams(window.location.search);
-    // const tag = queryParams.get('tags') || '';
-    // const category = queryParams.get('category') || '';
-    // const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
-    // console.error('取得文章列表', query);
-    // this.searchTag(query);
+  // 新增：分頁狀態管理
+  currentPage = signal<number>(1);
+  totalPages = signal<number>(1);
 
+  ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
+      const page = Number(params['page']) || 1;
+      const limit = Number(params['limit']) || 10;
+      this.currentPage.set(page);
       const tag = params["tags"] || '';
       const category = params["category"] || '';
-      const query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
-      this.searchTag(query);
-      // const category = params['category'];
-      // // if (category) {
-      // //   this.searchTag(category ? `category=${category}` : '');
-      // // }
+      var query = tag ? `tags=${tag}` : category ? `category=${category}` : '';
+      // query += query == "" ? `&page=${page}` : `?page=${page}`;
+      this.searchTag(query, page, limit);
     });
   }
 
-  searchTag(query: string) {
-    this.postService.getPosts(query).subscribe({
+  searchTag(query: string, page: number = 1, limit: number = 10) {
+    this.postService.getPosts(query, page, limit).subscribe({
       next: (data) => {
-        if (data.length === 0) {
+        if (data.data.length === 0) {
           this.snackBar.open('沒有找到相關文章', '關閉', { duration: 3000 });
         }
-        this.posts.set(data);
+        this.posts.set(data.data);
+        this.totalPages.set(data.totalPages);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -54,7 +54,12 @@ export class Home implements OnInit {
       },
     });
   }
-
+// 切換頁面：不直接呼叫 API，而是改變網址列，讓上面的 subscribe 觸發更新
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.router.navigate(['/'], { queryParams: { page: page } });
+    }
+  }
   // 準備用來渲染的假資料
   /*posts = [
     { 
