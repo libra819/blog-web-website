@@ -45,7 +45,7 @@ export class Login {
       error: (err) => {
         this.isLoading.set(false);
         // 根據 Express 後端的回傳自訂錯誤訊息
-        this.errorMessage.set(err.error?.message || '登入失敗，請檢查帳號或密碼。');
+        this.errorMessage.set('登入失敗，請檢查帳號或密碼。');
         console.error('登入錯誤', err);
       }
     });
