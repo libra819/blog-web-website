@@ -25,6 +25,15 @@ export interface PaginatedPosts {
   page: number;
   totalPages: number;
 }
+// 定義留言資料結構 (與 MariaDB 對應)
+export interface Comment {
+  id: number;
+  post_id: number;
+  author_id: string | null;
+  guest_name: string;
+  content: string;
+  created_at: string;
+}
 
 // 若有新增文章的需求，通常不包含 id, uuid, 時間等由資料庫產生的欄位
 export type CreatePostDTO = Omit<Post, 'id' | 'uuid' | 'created_at' | 'updated_at' | 'author_name'>;
@@ -88,5 +97,15 @@ export class PostService {
   // 新增分類
   addCategory(categoryName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/categories`, { category: categoryName });
+  }
+
+  // 取得單篇文章的所有留言
+  getCommentsByPostId(postId: number | string): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`${this.apiUrl}/${postId}/comments`);
+  }
+
+  // 新增留言 (Payload 包含 reCAPTCHA Token)
+  addComment(postId: number | string, payload: { content: string, guestName?: string, recaptchaToken: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${postId}/comments`, payload);
   }
 }

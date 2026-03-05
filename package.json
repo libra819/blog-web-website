@@ -38,6 +38,7 @@
     "@editorjs/paragraph": "^2.11.7",
     "editorjs-html": "^4.0.5",
     "highlight.js": "^11.11.1",
+    "ng-recaptcha": "^13.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

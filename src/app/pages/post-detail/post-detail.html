@@ -30,6 +30,65 @@
       </div>
     </footer>
   </article>
+  <section class="comments-section">
+    <h3 class="comments-title">
+      <i class="fa-regular fa-comments"></i> 留言 ({{ comments().length }})
+    </h3>
+
+    <div class="comments-list">
+      @for (comment of comments(); track comment.id) {
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-author">
+              <i class="fa-solid fa-user-circle"></i> 
+              {{ comment.author_id ? '管理員：'+ comment.guest_name  : (comment.guest_name || '訪客') }}
+            </span>
+            <span class="comment-date">{{ comment.created_at | date:'yyyy-MM-dd HH:mm' }}</span>
+          </div>
+          <div class="comment-body">
+            <p [innerHTML]="comment.content.replace('\n', '<br>')"></p>
+          </div>
+        </div>
+      } @empty {
+        <p class="no-comments">目前還沒有留言，來搶頭香吧！</p>
+      }
+    </div>
+
+    <div class="comment-form-container">
+      <h4>發表留言</h4>
+      <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+        
+        @if (!authService.isLoggedIn()) {
+          <div class="form-group">
+            <label>暱稱</label>
+            <input type="text" formControlName="guestName" placeholder="請輸入暱稱"
+                   [class.is-invalid]="commentForm.get('guestName')?.invalid && commentForm.get('guestName')?.touched">
+          </div>
+        }
+
+        <div class="form-group">
+          <label>留言內容</label>
+          <textarea formControlName="content" rows="4" placeholder="分享你的想法..."
+                    [class.is-invalid]="commentForm.get('content')?.invalid && commentForm.get('content')?.touched"></textarea>
+        </div>
+
+        <div class="form-group recaptcha-wrapper">
+          <re-captcha formControlName="recaptchaToken" [siteKey]="sitekey"></re-captcha>
+          @if (commentForm.get('recaptchaToken')?.invalid && commentForm.get('recaptchaToken')?.touched) {
+            <small class="error-text">請勾選我不是機器人</small>
+          }
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="isSubmittingComment() || commentForm.invalid">
+          @if (isSubmittingComment()) {
+            <i class="fa-solid fa-spinner fa-spin"></i> 傳送中...
+          } @else {
+            送出留言
+          }
+        </button>
+      </form>
+    </div>
+  </section>
 } @else {
   <div class="loading-state">
     <p><i class="fa-solid fa-spinner fa-spin"></i> 文章載入中...</p>
