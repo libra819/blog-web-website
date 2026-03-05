@@ -74,6 +74,7 @@ export class Authservice {
   // 登出邏輯
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.refreshTokenKey);
     this.isLoggedIn.set(false); // 更新登入狀態
   }
 }

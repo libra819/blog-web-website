@@ -76,7 +76,7 @@ export class Editor implements OnInit {
   loadCategories() {
     this.postService.getCategories().subscribe({
       next: (categories) => this.categoryList.set(categories),
-      error: (err) => console.error('無法載入分類清單', err)
+      error: (err) => console.error('無法載入分類清單', err),
     });
   }
 
@@ -188,7 +188,7 @@ export class Editor implements OnInit {
           // 如果分類不在清單內，先呼叫 API 將其寫入 postsettings
           await firstValueFrom(this.postService.addCategory(inputCategory));
           // 更新本地 Signal，避免重複發送
-          this.categoryList.update(list => [...list, inputCategory]); 
+          this.categoryList.update((list) => [...list, inputCategory]);
         } catch (catErr) {
           console.error('新增分類至資料庫失敗', catErr);
           // 這裡可以選擇不中斷流程，繼續儲存文章
@@ -222,8 +222,26 @@ export class Editor implements OnInit {
   }
 
   private handleError(err: any) {
-    this.isSaving.set(false);
-    console.error('儲存失敗', err);
-    this.snackBar.open('儲存失敗，請檢查輸入或稍後再試', '關閉', { duration: 3000 });
+    if (err.status === 401) {
+      this.authService.logout();
+      this.router.navigate(['/']);
+      return;
+    } else if (err.status === 400) {
+      this.snackBar.open(err.error?.message || '請檢查輸入內容是否正確', '關閉', {
+        duration: 3000,
+      });
+      this.isSaving.set(false);
+      return;
+    } else if (err.status === 403) {
+      this.snackBar.open('您沒有權限執行此操作', '關閉', { duration: 3000 });
+      this.isSaving.set(false);
+      this.authService.logout();
+      this.router.navigate(['/nlog']);
+      return;
+    } else {
+      this.isSaving.set(false);
+      console.error('儲存失敗', err);
+    }
+    // this.snackBar.open('儲存失敗，請檢查輸入或稍後再試', '關閉', { duration: 3000 });
   }
 }

@@ -3,6 +3,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { PostService, Post } from '../../services/post';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Authservice } from '../../services/auth';
 @Component({
   selector: 'app-dashboard',
   imports: [RouterLink, DatePipe],
@@ -11,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class Dashboard implements OnInit {
   private postService = inject(PostService);
+  private authService = inject(Authservice);
   private snackBar = inject(MatSnackBar);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -66,8 +68,17 @@ export class Dashboard implements OnInit {
           alert('文章已刪除');
         },
         error: (err) => {
-          console.error('刪除失敗', err);
-          alert('刪除失敗，請檢查權限或伺服器狀態');
+          if (err.status === 403) {
+            this.authService.logout();
+            this.router.navigate(['/nlog']);
+            this.snackBar.open('您沒有權限刪除這篇文章', '關閉', { duration: 3000 });
+            return;
+          } else {
+            this.router.navigate(['/nlog']);
+            this.snackBar.open('刪除失敗，請檢查權限或伺服器狀態', '關閉', { duration: 3000 });
+          }
+          // console.error('刪除失敗', err);
+          // alert('刪除失敗，請檢查權限或伺服器狀態');
         }
       });
     }
